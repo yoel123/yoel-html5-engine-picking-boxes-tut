@@ -1,11 +1,11 @@
 in this tutorial i will show how to create a simple game using my engine.<br>
-				concepts that will be covered:keyboard control,boundaries (where the player cant move),<br>
-				very simple hud,collision detection,random numbers. 
+concepts that will be covered:keyboard control,boundaries (where the player cant move),<br>
+very simple hud,collision detection,random numbers. 
 				
-				the game will be a clone of picking sticks i learned to make in c++.converted to js<br>
-				its a very simple game.perfect hello world to game programming.
+the game will be a clone of picking sticks i learned to make in c++.converted to js<br>
+its a very simple game.perfect hello world to game programming.
 
-for basic use of my game engine olease search for yoel-html5-game-engine-tutorials. its also in my repos on github.
+for basic use of my game engine please search for yoel-html5-game-engine-tutorials. its also in my repos on github.
 				
 if theirs any mistake or something you dont understand please contact me.
 
