@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+
+
+	<title>game design</title>
+
+ 	
+
+	<style>
+	
+		#y_game
+		{
+			position:relative;
+			background: #000 none repeat scroll 0 0;
+			overflow:hidden;
+			width:300px;
+		    height:500px;
+			
+		    color:white;
+			font-size:2em;
+			
+		    border:10px solid #333;
+		    margin:30px auto;
+		    box-shadow:5px 5px 10px #444;
+			transform-style: preserve-3d;
+			
+			
+		}
+	
+		.entity
+		{
+			position:absolute;
+			background:blue;
+			height:50px;
+			width:50px;
+			-webkit-transform-style: preserve-3d;
+			backface-visibility: hidden;
+			-webkit-transform: translate3d(0,0,0); 
+			transform: rotate(0deg);
+			-moz-transform:  rotate(0deg);
+			
+			
+		}
+		.hitbox
+		{
+			position:absolute;
+			border:solid 1px red;
+		}
+		.box
+		{
+			background:red;
+		}
+	</style>
+</head> 
+ 
+<body> 
+
+	<div id="y_game"></div>
+
+	
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/yoel_dom_game.js"></script>
+	
+	<script>
+	//game main
+	function main()
+	{
+		var test_world = new y_world("y_game");
+		yoel_engine_p.current_world = test_world;
+		yoel_engine_p.init();
+		
+		
+		//create example entity
+		var test_p = new player(100,100,0,5);
+		var test_b = new box(200,100,0,"");
+		
+	
+	    //add it to world	
+        yoel_engine_p.current_world.add(test_p);
+        yoel_engine_p.current_world.add(test_b);
+
+	
+
+
+	
+	}
+
+
+
+
+
+
+
+ ////////  player////////
+var player = function(x,y,z,speed,mesh)
+{ 
+ this.did_init = false;
+ this.type = 'player'; 
+ 
+ //player score att
+ this.score=0;
+
+ y_entity.call(this,x,y,z,speed,mesh); 
+
+} 
+ 
+ player.prototype= new y_entity(); 
+ 
+ var player_p = player.prototype; 
+ 
+ player_p.init = function()
+{
+
+  if(!this.did_init)
+  {
+	this.did_init = true;
+	
+	//show score using jqury
+	var id ="#"+yoel_engine_p.current_world.game_wraper;//game container id
+	$(id).append("<div class='yscore'></div>");//create score container div
+	$(".yscore").text("score: "+this.score);//add text to yscore
+	
+	return;
+  }//if did init escape 
+
+}//end init 
+
+ player_p.update = function()
+{
+	this.init();
+	this.move();
+	this.hit();
+	 y_entity_p.update.call(this); 
+
+}//end update 
+
+player_p.move = function()
+{
+
+	var speed = this.speed;
+	
+	//move left
+	if(y_input2_p.key_down[y_key.A] ||y_input2_p.key_down[y_key.left] && this.x>-5)
+	{
+		y_entity_p.move_by.call(this,-speed,0,0);
+	}
+	//move right
+	if(y_input2_p.key_down[y_key.D] || y_input2_p.key_down[y_key.right] && this.x<240)
+	{
+			y_entity_p.move_by.call(this,speed,0,0);
+	}
+	//move up
+	if(y_input2_p.key_down[y_key.W]  || y_input2_p.key_down[y_key.up] && this.y>30)
+	{
+			y_entity_p.move_by.call(this,0,-speed,0);
+	}
+	//move down
+	if(y_input2_p.key_down[y_key.S]|| y_input2_p.key_down[y_key.down]&& this.y<455)
+	{
+			y_entity_p.move_by.call(this,0,speed,0);
+	}
+}//end move
+player_p.hit = function()
+{
+	//hit test
+	hit_test = y_entity_p.colide.call(this,"box");
+
+	if(hit_test)
+	{
+		//activate box method random position
+		hit_test.rand_pos();
+		//increment score
+		this.score++
+		//update score
+		$(".yscore").text("score: "+this.score);
+		
+		
+	}
+}//end hit
+
+
+ //////// end player////////
+
+ 
+ ////////  box////////
+var box = function(x,y,z,speed,mesh)
+{ 
+	this.did_init = false;
+	this.type = 'box'; 
+
+	y_entity.call(this,x,y,z,speed,mesh); 
+	//set width and hight
+    this.width=20;
+	this.height=20;
+	yw_h(this,this.width,this.height)
+} 
+ 
+ box.prototype= new y_entity(); 
+ 
+ var box_p = box.prototype; 
+ 
+ box_p.init = function()
+{
+
+ if(this.did_init){return;}//if did init escape 
+
+}//end init 
+
+box_p.update = function()
+{
+ this.init();
+ y_entity_p.update.call(this); 
+
+}//end update 
+
+ box_p.rand_pos = function()
+{
+	this.x = y_random(0,200);
+	this.y = y_random(30,455);
+	//call move by to reset div pos
+	y_entity_p.move_by.call(this,0,0,0);
+}//end rand_pos 
+
+ 
+ //////// end box////////
+
+
+
+	//main
+	main();
+	</script>
+
+</body> 
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>tutorial picking boxes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Loading Bootstrap -->
+    <link href="css/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Loading Flat UI -->
+    <link href="css/flat-ui.min.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="js/vendor/html5shiv.js"></script>
+      <script src="js/vendor/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container">
+        <h1>yoel html5 2d game engine programming tut a simple game</h1>
+		<h2>picking boxes</h2>
+		<hr>
+		<div class="row">
+			<div class="tile  palette palette-peter-river">
+				<p>
+				in this tutorial i will show how to create a simple game using my engine.<br>
+				concepts that will be covered:keyboard control,boundaries (where the player cant move),<br>
+				very simple hud,collision detection,random numbers. 
+				
+				the game will be a clone of picking sticks i learned to make in c++.converted to js<br>
+				its a very simple game.perfect hello world to game programming.
+			    </p>
+			</div>
+			<div class="ypart1">
+				<p>
+				</p>
+				
+				<p>
+				the finished project is in file called finished project
+				</p>
+				
+				<p>
+				</p>
+				<p>
+					first we will will create two entitys<br>
+					player and box.
+					
+				</p>
+				<pre><code class="js">
+			     ////////  player////////
+var player = function(x,y,z,speed,mesh)
+{ 
+ this.did_init = false;
+ this.type = 'player'; 
+ 
+ y_entity.call(this,x,y,z,speed,mesh); 
+
+} 
+ 
+ player.prototype= new y_entity(); 
+ 
+ var player_p = player.prototype; 
+ 
+ player_p.init = function()
+{
+
+  if(!this.did_init)
+  {
+	this.did_init = true;
+
+	return;
+  }//if did init escape 
+
+}//end init 
+
+ player_p.update = function()
+{
+	this.init();
+	
+	 y_entity_p.update.call(this); 
+
+}//end update 
+
+
+
+
+ //////// end player////////
+
+ 
+ ////////  box////////
+var box = function(x,y,z,speed,mesh)
+{ 
+	this.did_init = false;
+	this.type = 'box'; 
+
+	y_entity.call(this,x,y,z,speed,mesh); 
+
+} 
+ 
+ box.prototype= new y_entity(); 
+ 
+ var box_p = box.prototype; 
+ 
+ box_p.init = function()
+{
+
+ if(this.did_init){return;}//if did init escape 
+
+}//end init 
+
+box_p.update = function()
+{
+ this.init();
+ y_entity_p.update.call(this); 
+
+}//end update 
+
+
+
+ 
+ //////// end box////////
+				</code></pre>
+			</div><!--end ypart1-->
+			<div class="ypart2">
+				<p>
+				then we will add them to our main method and add the to current world
+				</p>
+			
+				<pre><code class="js">
+				//game main
+				function main()
+				{
+					var test_world = new y_world("y_game");
+					yoel_engine_p.current_world = test_world;
+					yoel_engine_p.init();
+					
+					<span class=" palette-alizarin" >
+					//create example entity
+					var test_p = new player(100,100,0,5);
+					var test_b = new box(200,100,0,"");
+					
+				
+					//add it to world	
+					yoel_engine_p.current_world.add(test_p);
+					yoel_engine_p.current_world.add(test_b);
+					</span >
+				
+
+
+				
+				}	
+				</code></pre>
+				<p>
+				we will add two new methods to player class: move and hit.<br>
+				move is for movment, hit is for the hitest between the box.
+				</p>
+	
+				<pre><code class="js">
+				 player_p.update = function()
+				{
+					this.init();
+					<span class=" palette-alizarin" >
+					this.move();
+					this.hit();
+					</span >
+					 y_entity_p.update.call(this); 
+
+				}//end update 
+
+				player_p.move = function()
+				{
+
+				}//end move
+				player_p.hit = function()
+				{
+
+				}//end hit
+				</code></pre>
+				
+				<p>
+				i also add the methods to the update method.<br>
+				
+				we will add movement functionality in the move method:
+				</p>
+				
+	
+				<pre><code class="js">
+	player_p.move = function()
+{
+
+	var speed = this.speed;
+	
+	//move left
+	if(y_input2_p.key_down[y_key.A] ||y_input2_p.key_down[y_key.left])
+	{
+		y_entity_p.move_by.call(this,-speed,0,0);
+	}
+	//move right
+	if(y_input2_p.key_down[y_key.D] || y_input2_p.key_down[y_key.right] )
+	{
+			y_entity_p.move_by.call(this,speed,0,0);
+	}
+	//move up
+	if(y_input2_p.key_down[y_key.W]  || y_input2_p.key_down[y_key.up] )
+	{
+			y_entity_p.move_by.call(this,0,-speed,0);
+	}
+	//move down
+	if(y_input2_p.key_down[y_key.S]|| y_input2_p.key_down[y_key.down])
+	{
+			y_entity_p.move_by.call(this,0,speed,0);
+	}
+}//end move
+				</code></pre>
+				
+				
+				<p>
+				now we will add,the limit movement functionality,so when the player reaches,<br>
+				the edge of the game container or below the the ui (20px bellow the top of the container is the <br>
+				space i left for the score text). we wii add an "and" operator at the end of each<br>
+				if statement,and add another condition like : if x<200,then the move_by will happen<br>
+				only when x is smaller then 200. so the player cant move after that.and can only move until<br>
+				the entity x is 200.
+				</p>
+						
+				<pre><code class="js">
+				player_p.move = function()
+				{
+
+					var speed = this.speed;
+					
+					//move left
+					if(y_input2_p.key_down[y_key.A] ||y_input2_p.key_down[y_key.left]<span class=" palette-alizarin" > && this.x>-5</span >)
+					{
+						y_entity_p.move_by.call(this,-speed,0,0);
+					}
+					//move right
+					if(y_input2_p.key_down[y_key.D] || y_input2_p.key_down[y_key.right] <span class=" palette-alizarin" >&& this.x<240</span >)
+					{
+							y_entity_p.move_by.call(this,speed,0,0);
+					}
+					//move up
+					if(y_input2_p.key_down[y_key.W]  || y_input2_p.key_down[y_key.up] <span class=" palette-alizarin" >&& this.y>30</span >)
+					{
+							y_entity_p.move_by.call(this,0,-speed,0);
+					}
+					//move down
+					if(y_input2_p.key_down[y_key.S]|| y_input2_p.key_down[y_key.down]<span class=" palette-alizarin" >&& this.y<455</span >)
+					{
+							y_entity_p.move_by.call(this,0,speed,0);
+					}
+				}//end move
+				</code></pre>
+				<p>
+				now we will do the hit method:
+				</p>
+				
+				<pre><code class="js">
+				player_p.hit = function()
+				{
+					//hit test
+					hit_test = y_entity_p.colide.call(this,"box");
+
+					if(hit_test)
+					{
+						
+						
+					}
+				}//end hit
+				</code></pre>
+				<p>
+				if player collides with box do something.<br>
+				when hit test will return true i want two things to happen.<br>
+				one add a point to score, two put box in a random position.<br>
+				we will start with the random position method lets add it to box class.
+				</p>
+				
+				<pre><code class="js">
+				 box_p.rand_pos = function()
+				{
+
+				}//end rand_pos
+				</code></pre>
+				<p>
+				we wont add it to update method.<br>
+				we will insert random values to the box x and y attributes.
+				</p>
+				<pre><code class="js">
+				 box_p.rand_pos = function()
+				{
+					this.x = y_random(0,200);
+					this.y = y_random(30,455);
+
+				}//end rand_pos
+				</code></pre>
+				<p>
+				y_random is a function included with my game engine.it takes two arguments.<br>
+				from and to for example we want a random number from 1-10.we will do it like this:<br>
+				 y_random(1,10);<br>
+				 this will retun a rendom number from 1to10.<br>
+				 one last thing to do is to affect the dom element of the actual html div<br>
+				 we will do it by calling move_by like this:
+				</p>
+				
+				<pre><code class="js">
+				 box_p.rand_pos = function()
+				{
+					this.x = y_random(0,200);
+					this.y = y_random(30,455);
+					<span class=" palette-alizarin" > 
+					//call move by to reset div pos
+					y_entity_p.move_by.call(this,0,0,0);
+					</span >
+				}//end rand_pos
+				</code></pre>
+				
+				<p>
+				now we will use it in hit method of the player class(colide method returns the collided entity ).
+				</p>
+				
+				<pre><code class="js">
+			player_p.hit = function()
+			{
+				//hit test
+				hit_test = y_entity_p.colide.call(this,"box");
+
+				if(hit_test)
+				{
+				<span class=" palette-alizarin" > 
+					//activate box method random position
+					hit_test.rand_pos();
+				</span >
+				}
+			}//end hit
+				</code></pre>
+				<p>
+				all we have left is to add a score,and increment it when hit_test is true.<br>
+				first we will add a score attribute to the player constructor:
+				</p>
+				
+				<pre><code class="js">
+				 ////////  player////////
+				var player = function(x,y,z,speed,mesh)
+				{ 
+				 this.did_init = false;
+				 this.type = 'player'; 
+				 
+				 <span class=" palette-alizarin" >
+				 //player score att
+				 this.score=0;
+				 </span >
+
+				 y_entity.call(this,x,y,z,speed,mesh); 
+
+				} 
+ 
+				</code></pre>
+				<p>
+				now we will display it using jquery,we will do that in players,initialize method:<br>
+				</p>
+				<pre><code class="js">
+				 player_p.init = function()
+{
+
+				  if(!this.did_init)
+				  {
+					this.did_init = true;
+					 <span class=" palette-alizarin" >
+					//show score using jqury
+					var id ="#"+yoel_engine_p.current_world.game_wraper;//game container id
+					$(id).append("&lt;div class='yscore'&gt;&lt/div&gt;");//create score container div
+					$(".yscore").text("score: "+this.score);//add text to yscore
+					</span >
+					return;
+				  }//if did init escape 
+
+				}//end init
+				</code></pre>
+				<p>
+				then we will add another line to our hit method<br>
+				so it will show the latest score value and increment 1 to score:
+				</p>
+				
+				<pre><code class="js">
+				player_p.hit = function()
+				{
+					//hit test
+					hit_test = y_entity_p.colide.call(this,"box");
+
+					if(hit_test)
+					{
+						//activate box method random position
+						hit_test.rand_pos();
+						<span class=" palette-alizarin" >
+						//increment score
+						this.score++
+						//update score
+						$(".yscore").text("score: "+this.score);
+						</span >
+						
+						
+					}
+				}//end hit
+				</code></pre>
+				
+				<p>
+				to make the box red i just add some css,the css class is the same as the entitys type attribute.
+				</p>
+				<pre><code class="css">
+				.box
+				{
+					background:red;
+				} 
+				</code></pre>
+				<p>
+				to make the box smaller i used this code:
+				</p>
+				<pre><code class="css">
+				 ////////  box////////
+				var box = function(x,y,z,speed,mesh)
+				{ 
+					this.did_init = false;
+					this.type = 'box'; 
+
+					y_entity.call(this,x,y,z,speed,mesh); 
+					<span class=" palette-alizarin" >
+					//set width and hight
+					this.width=20;
+					this.height=20;
+					yw_h(this,this.width,this.height);
+					</span >
+				}  
+				</code></pre>
+				<p>
+				yw_h() gets 3 arguments, first is the entity (in this case its this),width and height
+				</p>
+				<p>
+				thats it for this tut
+				</p>
+			</div><!--end ypart2-->
+			<div class="ypart3"></div><!--end ypart3-->
+			<div class="ypart4"></div><!--end ypart4-->
+		</div>
+	
+    </div>
+    <!-- /.container -->
+	
+    <!-- script higlighter -->
+	
+
+    <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
+    <script src="js/vendor/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/vendor/video.js"></script>
+    <script src="js/flat-ui.min.js"></script>
+	<script>
+	///scroll to div when link is clicked
+	$( document ).ready(function() {
+	    $("yscroll").on('click', function(e) {
+
+			// prevent default anchor click behavior
+		   e.preventDefault();
+
+		   // animate
+		   $('html, body').animate({
+			   scrollTop: $(this.hash).offset().top
+			 }, 300, function(){
+	   
+			   // when done, add hash to url
+			   // (default click behaviour)
+			   window.location.hash = this.hash;
+			 });
+
+		});
+	});
+	</script>
+
+  </body>
+</html>
