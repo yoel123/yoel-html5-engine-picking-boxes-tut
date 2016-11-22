@@ -7,6 +7,12 @@ its a very simple game.perfect hello world for game programming.
 
 for basic use of my game engine please search for yoel-html5-game-engine-tutorials. its also in my repos on github:
 https://github.com/yoel123/yoel-html5-game-engine-tutorials/
+
+the tut online:
+https://cdn.rawgit.com/yoel123/yoel-html5-engine-picking-boxes-tut/master/picking%20boxes.html
+
+the game demo:
+https://cdn.rawgit.com/yoel123/yoel-html5-engine-picking-boxes-tut/master/finished%20project/index.html
 				
 if theirs any mistake or something you dont understand please contact me.
 
